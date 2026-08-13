@@ -36,6 +36,7 @@ async def add_expense(operation: Operation):
 
     wallet = await wallet_repository.get_wallet_balance_by_name(operation.wallet_name)
 
+
     if wallet.balance < operation.amount:
         raise HTTPException(
             status_code=400,
