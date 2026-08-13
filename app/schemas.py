@@ -3,11 +3,11 @@ from pydantic import BaseModel, Field, field_validator
 
 class Operation(BaseModel):
     wallet_name: str = Field(..., max_length=50)
-    mount: float
+    amount: float
     description: str | None = Field(None, max_length=200)
 
-    @field_validator('mount')
-    def validate_mount(cls, value: float) -> float:
+    @field_validator('amount')
+    def validate_amount(cls, value: float) -> float:
         if value <= 0:
             raise ValueError('Сумма должна быть положительной.')
         return value

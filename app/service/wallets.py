@@ -4,29 +4,30 @@ from app.repository import wallets as wallets_repository
 from app.schemas import CreateWallet
 
 
-def get_balance(wallet_name: str | None = None):
+async def get_balance(wallet_name: str | None = None):
     if wallet_name is None:
-        wallets= wallets_repository.get_all_wallets()
+        wallets = await wallets_repository.get_all_wallets()
         return {'total_balance': sum([w.balance for w in wallets])}
 
-    if not wallets_repository.wallet_already_exist(wallet_name):
+    wallet = await wallets_repository.get_wallet_balance_by_name(wallet_name)
+
+    if wallet is None:
         raise HTTPException(
             status_code=404,
-            detail=f"Wallet '{wallet_name}' not found."
+            detail=f'Кошелек {wallet_name} не найден.'
         )
 
-    wallet = wallets_repository.get_wallet_balance_by_name(wallet_name)
-    return {'wallet': wallet.name, 'balance': wallet.balance}
+    return {'wallet': wallet_name, 'balance': wallet.balance}
 
-def create_wallet(wallet: CreateWallet):
-    if wallets_repository.wallet_already_exist(wallet.name):
+async def create_wallet(wallet: CreateWallet):
+    if await wallets_repository.wallet_already_exist(wallet.name):
         raise HTTPException(
             status_code=400,
             detail=f"Кошелек '{wallet.name}' уже существует."
         )
 
-    new_balance = wallets_repository.create_wallet(wallet.name, wallet.initial_balance)
+    new_balance = await wallets_repository.create_wallet(wallet.name, wallet.initial_balance)
  
     return {
-        'message': f"Кошелек '{wallet.name}' создан с балансом - {new_balance}."
+        'message': f"Кошелек '{new_balance.name}' создан с балансом - {new_balance.balance}."
     }

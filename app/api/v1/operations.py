@@ -7,10 +7,10 @@ router = APIRouter()
 
 
 @router.post("/operation/income")
-def add_income(operation: Operation):
-    return operation_services.add_income(operation)
+async def add_income(operation: Operation):
+    return await operation_services.add_income(operation)
 
 @router.post("/operation/expense")
-def add_expense(operation: Operation):
-    return operation_services.add_expense(operation)  
+async def add_expense(operation: Operation):
+    return await operation_services.add_expense(operation)
           

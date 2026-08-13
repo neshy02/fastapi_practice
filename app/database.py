@@ -1,7 +1,6 @@
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, AsyncSession
 from sqlalchemy.orm import declarative_base, DeclarativeBase
 
-balance: dict[str, float] = {}
 
 DATABASE_URL = "postgresql+asyncpg://postgres:password@localhost:5432/wallet_db"
 
@@ -13,6 +12,6 @@ SessionLocal = async_sessionmaker(
     expire_on_commit=False
 )
 
-class Wallet(DeclarativeBase):
+class Base(DeclarativeBase):
     pass
 
