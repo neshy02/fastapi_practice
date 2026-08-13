@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.database import SessionLocal
@@ -17,7 +19,7 @@ async def add_income(wallet_name: str, amount: float) -> Wallet | None:
         wallet = result.scalar_one_or_none()
 
         if wallet:
-            wallet.amount += amount
+            wallet.balance += Decimal(str(amount))
             await db.commit()
             await db.refresh(wallet)
         return wallet
@@ -34,7 +36,7 @@ async def add_expense(wallet_name: str, amount: float) -> Wallet | None:
         result = await db.execute(query)
         wallet = result.scalar_one_or_none()
         if wallet:
-            wallet.amount -= amount
+            wallet.balance -= Decimal(str(amount))
             await db.commit()
             await db.refresh(wallet)
         return wallet
