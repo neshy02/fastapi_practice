@@ -17,14 +17,14 @@ def add_income(operation: Operation):
             detail='Сумма дохода должна быть положительной.'
         )
 
-    new_balance = wallet_repository.add_income(operation.wallet_name, operation.mount)
+    wallet = wallet_repository.add_income(operation.wallet_name, operation.mount)
 
     return {
         'message': 'Доход успешно добавлен.',
         'wallet_name': operation.wallet_name,
         'amount': operation.mount,
         'description': operation.description,
-        'new_balance': new_balance
+        'new_balance': wallet.balance
 
     }  
 
@@ -35,28 +35,22 @@ def add_expense(operation: Operation):
             detail=f'Кошелек {operation.wallet_name} не найден.'
         )
 
-    balance = wallet_repository.get_wallet_balance_by_name(operation.wallet_name)
+    wallet = wallet_repository.get_wallet_balance_by_name(operation.wallet_name)
 
-    if balance <= 0:
+    if wallet.balance < operation.mount:
         raise HTTPException(
             status_code=400,
-            detail=f'Сумма дохода должна быть положительной. Доступно {balance}'
+            detail=f'Недостаточно средств на кошельке. Доступно {wallet.balance}, требуется {operation.mount}.'
         )
 
-    if balance < operation.mount:
-        raise HTTPException(
-            status_code=400,
-            detail=f'Недостаточно средств на кошельке. Доступно {balance}, требуется {operation.mount}.'
-        )
-
-    new_balance = wallet_repository.add_expense(operation.wallet_name, operation.mount)
+    wallet = wallet_repository.add_expense(operation.wallet_name, operation.mount)
 
     return {
         'message': 'Расход успешно добавлен.',
         'wallet_name': operation.wallet_name,
         'amount': operation.mount,
         'description': operation.description,
-        'new_balance': new_balance
+        'new_balance': wallet.balance
     }
 
 

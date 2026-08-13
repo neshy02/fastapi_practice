@@ -38,7 +38,7 @@ async def get_weather(
         str, 
         Query( 
             pattern="^(celsius|farenheit)$",    
-            description="Введите celsius или farenheit",
+            description="Введите celсsius или farenheit",
             title='Единицы измерения температуры'
         )
     ] = 'celsius'
